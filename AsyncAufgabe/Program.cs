@@ -7,19 +7,24 @@ List<Task> tasks = new();
 foreach ( var file in files )
 {
     string localpath = file;
-    Task t = Task.Factory.StartNew( () => DistinctLetterCount( localpath ) );
+    Task t = Task.Run( () => DistinctLetterCount( localpath ) );
     tasks.Add( t );
 }
 
-Task.WaitAll( tasks.ToArray() );
-//Console.ReadLine();
+Console.WriteLine( "Tasks running ..." );
 
-static void DistinctLetterCount( string path )
+await Task.WhenAll( tasks );
+
+Console.WriteLine( "All Tasks finished ..." );
+Console.ReadLine();
+
+static async Task DistinctLetterCount( string path )
 {
     string localpath = path;
-    string content = File.ReadAllText( localpath );
+    string content = await File.ReadAllTextAsync( localpath );
+
     Dictionary<char , int> counters = new();
-    FillDictionary( ref counters , content );
+    counters = await FillDictionary( content );
 
     foreach ( char c in content )
         if ( char.IsAscii( c ) )
@@ -29,16 +34,20 @@ static void DistinctLetterCount( string path )
 
     string outputpath = Path.ChangeExtension( localpath , ".freq" );
 
-    File.WriteAllLines( outputpath , output );
+    await File.WriteAllLinesAsync( outputpath , output );
 }
 
-static void FillDictionary( ref Dictionary<char , int> d , string source )
+static async Task<Dictionary<char , int>> FillDictionary( string source )
 {
+    Dictionary<char , int> d = new();
+
     var characters = source.ToLower().Distinct();
 
     foreach ( var c in characters )
         if ( char.IsAscii( c ) )
             d [ c ] = 0;
+
+    return d;
 }
 
 static void PrintDictionary( Dictionary<char , int> d , string? header = null )
