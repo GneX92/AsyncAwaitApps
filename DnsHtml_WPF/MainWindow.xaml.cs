@@ -70,7 +70,8 @@ public partial class MainWindow : Window
     private void btnStart_Click( object sender , RoutedEventArgs e )
     {
         dic.Clear();
-        string [] hosts = File.ReadAllLines( tbFilePath.Text );
+        string [] file = File.ReadAllLines( tbFilePath.Text );
+        string [] hosts = file.Distinct().ToArray();
         List<Task> tasks2 = new();
         Dictionary<string , Task<string>> dic2 = new();
 

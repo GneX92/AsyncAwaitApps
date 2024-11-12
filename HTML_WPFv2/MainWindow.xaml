@@ -1,0 +1,29 @@
+﻿<Window x:Class="HTML_WPFv2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HTML_WPFv2"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800" Background="#CCCCCC">
+    <Grid>
+        <Label Content="Hostdatei" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" />
+        <TextBox x:Name="tbFilePath" HorizontalAlignment="Left" Margin="76,14,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="289" Height="21" IsEnabled="False" />
+        <Button x:Name="btnOpenFile" Content=". . ." HorizontalAlignment="Left" Margin="370,14,0,0" VerticalAlignment="Top" Height="21" Width="25" RenderTransformOrigin="1.607,0.428" Click="btnOpenFile_Click" />
+        <ListBox x:Name="lbHosts" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="10,41,540,10" SelectionChanged="lbHost_SelectionChanged" />
+        <Button x:Name="btnStart" Content="Start" HorizontalAlignment="Left" Margin="400,14,0,0" VerticalAlignment="Top" Width="100" Height="21" VerticalContentAlignment="Center" Click="btnStart_Click" />
+        <ListBox x:Name="lbIP" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="265,41,285,10" />
+        <ListBox x:Name="lbHTML" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="520,41,30,10" >
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock>
+                        <Run Text="{Binding Key, Mode=OneWay}"/>
+                        <Run Text=": "/>
+                        <Run Text="{Binding Value, Mode=OneWay}"/>
+                    </TextBlock>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <Button x:Name="btnCancel" Content="Cancel" HorizontalAlignment="Left" Margin="505,14,0,0" VerticalAlignment="Top" Width="100" Height="21" VerticalContentAlignment="Center" Click="btnCancel_Click" IsEnabled="False"/>
+    </Grid>
+</Window>
