@@ -13,6 +13,16 @@
         <ListBox x:Name="lbHosts" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="10,41,540,10" SelectionChanged="lbHost_SelectionChanged" />
         <Button x:Name="btnStart" Content="Start" HorizontalAlignment="Left" Margin="400,14,0,0" VerticalAlignment="Top" Width="100" Height="21" VerticalContentAlignment="Center" Click="btnStart_Click" />
         <ListBox x:Name="lbIP" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="265,41,285,10" SelectionChanged="lbIP_SelectionChanged" />
-        <ListBox x:Name="lbHTML" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="520,41,30,10" />
+        <ListBox x:Name="lbHTML" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="520,41,30,10" >
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock>
+                <Run Text="{Binding Key}"/>
+                <Run Text=": "/>
+                <Run Text="{Binding Value}"/>
+                    </TextBlock>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </Window>

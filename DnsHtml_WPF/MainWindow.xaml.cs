@@ -27,8 +27,7 @@ public partial class MainWindow : Window
 
     public MainWindow()
     {
-        InitializeComponent();
-        List<string> hostlist = new();
+        InitializeComponent();        
     }
 
     private void btnOpenFile_Click( object sender , RoutedEventArgs e )
@@ -53,7 +52,7 @@ public partial class MainWindow : Window
         tbFilePath.Text = path;
     }
 
-    public List<string> ResolveEntry( string host )
+    public static List<string> ResolveEntry( string host )
     {
         List<string> listIP = new List<string>();
 
@@ -71,10 +70,7 @@ public partial class MainWindow : Window
     {
         dic.Clear();
         string [] hosts = File.ReadAllLines( tbFilePath.Text );
-        List<string> listHost = new();
-        List<string> listIP = new();
-        List<Task<string>> tasks = new();
-        List<Task<Dictionary<string , int>>> tasks2 = new();
+        List<Task> tasks2 = new();
         Dictionary<string , Task<string>> dic2 = new();
 
         foreach ( var host in hosts )
@@ -99,15 +95,15 @@ public partial class MainWindow : Window
 
         foreach ( var task in dic2 )
         {
-            Task<Dictionary<string , int>> t = Task.Run( () => CountTags( task.Value.Result ) );
+            Task t = Task.Run( () => CountTags( task.Key, task.Value.Result ) );
             tasks2.Add( t );
         }
 
         Task.WhenAll( tasks2 ).Wait();
 
-        foreach ( var task in tasks )
+        
 
-            lbHosts.ItemsSource = hosts;
+        lbHosts.ItemsSource = hosts;
     }
 
     private void lbHost_SelectionChanged( object sender , SelectionChangedEventArgs e )
@@ -115,39 +111,45 @@ public partial class MainWindow : Window
         if ( lbHosts.SelectedIndex != -1 )
         {
             lbIP.ItemsSource = ResolveEntry( lbHosts.SelectedItem as string );
+            lbHTML.ItemsSource = dic [lbHosts.SelectedItem as string];
         }
     }
 
     private void lbIP_SelectionChanged( object sender , SelectionChangedEventArgs e )
     {
-        if ( lbIP.SelectedIndex != -1 )
-        {
-        }
+        //Might not be needed
     }
 
-    public string GetHtml( string url )
+    public static string GetHtml( string url )
     {
+        if ( !url.StartsWith( "http://" ) && !url.StartsWith( "https://" ) )
+        {
+            url = "http://" + url;
+        }
+
         // Anfrage an die übergebene URL starten
-        HttpClient httpClient = new HttpClient();
-        Task<string> t = httpClient.GetStringAsync( url );
-        string result = "";
-        try
+        using ( HttpClient httpClient = new HttpClient() )
         {
-            result = t.Result;
+            try
+            {
+                // Use async/await pattern instead of .Result to avoid potential deadlocks
+                Task<string> t = httpClient.GetStringAsync( url );
+                return t.GetAwaiter().GetResult();
+            }
+            catch ( HttpRequestException ex )
+            {
+                MessageBox.Show( $"Error fetching HTML for {url}: {ex.Message}" , "Error" , MessageBoxButton.OK );
+                return string.Empty;
+            }
+            catch ( Exception ex )
+            {
+                MessageBox.Show( $"Unexpected error for {url}: {ex.Message}" , "Error" , MessageBoxButton.OK );
+                return string.Empty;
+            }
         }
-        catch ( AggregateException ex )
-        {
-            string log = "";
-            foreach ( var item in ex.InnerExceptions )
-                log += item.Message + "\n";
-
-            MessageBox.Show( log , "Error" , MessageBoxButton.OK );
-        }
-
-        return result;
     }
 
-    public Dictionary<string , int> CountTags( string html )
+    public void CountTags( string host, string html )
     {
         Dictionary<string , int> tagCounts = new Dictionary<string , int>();
 
@@ -161,17 +163,17 @@ public partial class MainWindow : Window
         foreach ( Match match in matches )
         {
             string tagName = match.Groups [ 1 ].Value.ToLower(); // Convert to lowercase for consistency
-            if ( tagCounts.ContainsKey( tagName ) )
+            if ( tagCounts.ContainsKey( "<" + tagName + ">" ) )
             {
-                tagCounts [ tagName ]++;
+                tagCounts [ "<" + tagName + ">" ]++;
             }
             else
             {
-                tagCounts [ tagName ] = 1;
+                tagCounts [ "<" + tagName + ">" ] = 1;
             }
         }
 
-        return tagCounts;
+        dic.Add( host, tagCounts );
     }
 }
 
