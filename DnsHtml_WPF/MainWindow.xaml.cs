@@ -82,12 +82,11 @@ public partial class MainWindow : Window
             string hostName = host.Trim();
             Task<string> t = Task.Run( () => GetHtml( hostName ) );
             dic2.Add( hostName , t );
-            tasks.Add( t );
         }
 
         try
         {
-            Task.WhenAll( tasks ).Wait();
+            Task.WhenAll( dic2.Values ).Wait();
         }
         catch ( AggregateException ex )
         {
@@ -98,9 +97,9 @@ public partial class MainWindow : Window
             MessageBox.Show( log , "Error" , MessageBoxButton.OK );
         }
 
-        foreach ( var task in tasks )
+        foreach ( var task in dic2 )
         {
-            Task<Dictionary<string , int>> t = Task.Run( () => CountTags( task.Result ) );
+            Task<Dictionary<string , int>> t = Task.Run( () => CountTags( task.Value.Result ) );
             tasks2.Add( t );
         }
 
