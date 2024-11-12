@@ -17,9 +17,9 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock>
-                <Run Text="{Binding Key}"/>
-                <Run Text=": "/>
-                <Run Text="{Binding Value}"/>
+                        <Run Text="{Binding Key, Mode=OneWay}"/>
+                        <Run Text=": "/>
+                        <Run Text="{Binding Value, Mode=OneWay}"/>
                     </TextBlock>
                 </DataTemplate>
             </ListBox.ItemTemplate>

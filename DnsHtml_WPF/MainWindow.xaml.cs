@@ -15,6 +15,7 @@ using System;
 using Microsoft.Win32;
 using System.Net.Http;
 using System.Text.RegularExpressions;
+using System.Collections.ObjectModel;
 
 namespace DnsHtml_WPF;
 
@@ -23,7 +24,7 @@ namespace DnsHtml_WPF;
 /// </summary>
 public partial class MainWindow : Window
 {
-    public Dictionary<string , Dictionary<string , int>> dic = new();
+    public Dictionary<string , ObservableCollection<KeyValuePair<string , int>>> dic = new();
 
     public MainWindow()
     {
@@ -110,8 +111,9 @@ public partial class MainWindow : Window
     {
         if ( lbHosts.SelectedIndex != -1 )
         {
-            lbIP.ItemsSource = ResolveEntry( lbHosts.SelectedItem as string );
-            lbHTML.ItemsSource = dic [lbHosts.SelectedItem as string];
+            string selectedHost = lbHosts.SelectedItem as string;
+            lbIP.ItemsSource = ResolveEntry( selectedHost );
+            lbHTML.ItemsSource = dic [ selectedHost ];
         }
     }
 
@@ -151,7 +153,7 @@ public partial class MainWindow : Window
 
     public void CountTags( string host, string html )
     {
-        Dictionary<string , int> tagCounts = new Dictionary<string , int>();
+        var tagCounts = new ObservableCollection<KeyValuePair<string , int>>();
 
         // Regular expression to match HTML tags
         Regex tagRegex = new Regex( @"<\s*([a-z][a-z0-9]*)\b[^>]*>" , RegexOptions.IgnoreCase );
@@ -160,20 +162,27 @@ public partial class MainWindow : Window
         MatchCollection matches = tagRegex.Matches( html );
 
         // Count occurrences of each tag
+        var tempDict = new Dictionary<string , int>();
         foreach ( Match match in matches )
         {
-            string tagName = match.Groups [ 1 ].Value.ToLower(); // Convert to lowercase for consistency
-            if ( tagCounts.ContainsKey( "<" + tagName + ">" ) )
+            string tagName = "<" + match.Groups [ 1 ].Value.ToLower() + ">"; // Convert to lowercase for consistency
+            if ( tempDict.ContainsKey( tagName ) )
             {
-                tagCounts [ "<" + tagName + ">" ]++;
+                tempDict [ tagName ]++;
             }
             else
             {
-                tagCounts [ "<" + tagName + ">" ] = 1;
+                tempDict [ tagName ] = 1;
             }
         }
 
-        dic.Add( host, tagCounts );
+        // Convert to ObservableCollection
+        foreach ( var kvp in tempDict.OrderByDescending( x => x.Value ) )
+        {
+            tagCounts.Add( kvp );
+        }
+
+        dic [ host ] = tagCounts;
     }
 }
 
