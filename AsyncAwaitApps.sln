@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testing", "testing\testing.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HTML_WPFv2", "HTML_WPFv2\HTML_WPFv2.csproj", "{7E3AFC9C-4037-4672-A98E-A0F66785BAE5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PiAsync_WPF", "PiAsync_WPF\PiAsync_WPF.csproj", "{9699190D-9E40-4A4C-AFE1-25328FC1EC61}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{7E3AFC9C-4037-4672-A98E-A0F66785BAE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E3AFC9C-4037-4672-A98E-A0F66785BAE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E3AFC9C-4037-4672-A98E-A0F66785BAE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9699190D-9E40-4A4C-AFE1-25328FC1EC61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9699190D-9E40-4A4C-AFE1-25328FC1EC61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9699190D-9E40-4A4C-AFE1-25328FC1EC61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9699190D-9E40-4A4C-AFE1-25328FC1EC61}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
