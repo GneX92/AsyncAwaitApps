@@ -25,10 +25,10 @@ public partial class MainWindow : Window
 
     private async void btnStart_Click( object sender , RoutedEventArgs e )
     {
-        cts = new CancellationTokenSource();
+        cts = new();
         tbResult.Text = "Calculating ...";
 
-        var progress = new Progress<int>( value =>
+        Progress<int> progress = new( value =>
         {
             pbStatus.Value = value;
             labelStatus.Content = value.ToString( "N0" ) + " / 1.000.000.000";
@@ -52,9 +52,7 @@ public partial class MainWindow : Window
                 sum += 4.0 / ( 1.0 + x * x );
 
                 if ( i % 1000000 == 0 )
-                {
                     progress.Report( i );
-                }
             }
             return sum * step;
         } , token );
@@ -74,8 +72,5 @@ public partial class MainWindow : Window
         }
     }
 
-    private void btnCancel_Click( object sender , RoutedEventArgs e )
-    {
-        cts?.Cancel();
-    }
+    private void btnCancel_Click( object sender , RoutedEventArgs e ) => cts?.Cancel();
 }
