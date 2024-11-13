@@ -25,6 +25,8 @@ public partial class MainWindow : Window
 
     private async void btnStart_Click( object sender , RoutedEventArgs e )
     {
+        btnStart.IsEnabled = false;
+        btnCancel.IsEnabled = true;
         cts = new();
         tbResult.Text = "Calculating ...";
 
@@ -72,5 +74,10 @@ public partial class MainWindow : Window
         }
     }
 
-    private void btnCancel_Click( object sender , RoutedEventArgs e ) => cts?.Cancel();
+    private void btnCancel_Click( object sender , RoutedEventArgs e )
+    {
+        cts?.Cancel();
+        btnStart.IsEnabled = true;
+        btnCancel.IsEnabled = false;
+    }
 }
